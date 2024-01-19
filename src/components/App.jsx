@@ -16,7 +16,19 @@ export class App extends Component {
     ],
     filter: '',
   };
+  componentDidMount() {
+    // const contacts = localStorage.getItem('contacts');
+    const parsedContacts = JSON.parse(localStorage.getItem('contacts'));
+    if (parsedContacts?.length) {
+      this.setState({ contacts: parsedContacts });
+    }
+  }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.contacts !== prevState.contacts) {
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+    }
+  }
   isDublicate({ name, number }) {
     const { contacts } = this.state;
     const normalizedName = name.toLowerCase();
@@ -80,19 +92,7 @@ export class App extends Component {
     });
     return filteredContact;
   }
-  componentDidMount() {
-    const contacts = localStorage.getItem('contacts');
-    const parsedContacts = JSON.parse(contacts);
-    if (parsedContacts) {
-      this.setState({ contacts: parsedContacts });
-    }
-  }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (this.state.contacts !== prevState.contacts) {
-      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
-    }
-  }
   render() {
     const { addContact, deleteContact, changeFilter } = this;
     const contacts = this.getFilteredContact();
